@@ -1,3 +1,3 @@
 # Domain-Sort
 
-Once downloaded, run domainSort.exe and follow instructions on screen.
+Once downloaded, run sort_domain.exe and follow instructions on screen.
