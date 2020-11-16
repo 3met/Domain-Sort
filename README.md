@@ -7,16 +7,4 @@ Filters domain names from long lists. Contains options to filter one or two word
 _Note: I **highly** recommended you use version 2 (this version) over version 1_
 
 ## Instructions
-### For Python Version
-Paste a list of domains into the "input-domains.txt" file. Each line should contain one domain.
-
-Create a list of all TLDs or words/symbols you want to skip over in the filtering process. Put this list into "input-skiplist.txt" file. Each line should contain a different item. This step is optional.
-
-Run sort_domain.py and follow instructions on screen.
-
-### For Compiled Version
-Paste a list of domains into the "input-domains.txt" file. Each line should contain one domain.
-
-Create a list of all TLDs or words/symbols you want to skip over in the filtering process. Put this list into "input-skiplist.txt" file. Each line should contain a different item. This step is optional.
-
-Run sort_domain.exe and follow instructions on screen.
+See specific instructions in the folders for each version.
