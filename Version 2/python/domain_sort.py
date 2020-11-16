@@ -4,6 +4,8 @@
 	By: Emet Behrendt
 '''
 
+from datetime import datetime
+
 from dictionary import Dictionary
 
 import os
@@ -21,7 +23,7 @@ THREE_LETTER_DOMAIN_OUTPUT_FILE = "results-threeletter.txt"
 
 # Main Function
 def main():
-	print('Initializing...')
+	print('Initializing...', end='')
 
 	dictionary = Dictionary()
 
@@ -42,7 +44,6 @@ def main():
 		action = int(input("\nPlease select an action: "))
 		# Executes action as requested by user
 		if action == 1:
-			print("\nLooking for one word domains...")
 			one_word_filter(dictionary)
 		elif action == 2:
 			two_word_filter(dictionary)
@@ -56,8 +57,17 @@ def main():
 
 
 # Filters one word domains out of domain list
-def one_word_filter(dictionary):
+def one_word_filter(dictionary, verbose=True):
+	start_time = datetime.now()
+
+	if verbose:
+		print('\n------------------------------')
+		print('Searching for one word domains...')
+		print('------------------------------')
+		
 	domains = get_domains()
+	output = set()
+
 	with open(ONE_WORD_DOMAIN_OUTPUT_FILE, 'w') as results:
 		for domain in domains:
 			if check_valid(domain):
@@ -65,7 +75,18 @@ def one_word_filter(dictionary):
 				# Checks if the cleaned domain is a valid word
 				if cleaned_domain in dictionary.words:
 					print(domain)
+					output.add(domain)
 					results.write(domain + '\n')
+
+	end_time = datetime.now()
+
+	if verbose:
+		print('------------------------------')
+		print('Results:\n')
+		print(f'{len(output)} out of {len(domains)} valid results', end='')
+		print(f'({round((len(output)/len(domains))*100, 2)}%)')
+		print(f'Total Duration: {end_time-start_time}')
+		print('------------------------------')
 
 
 # Filters two word domains out of domain list

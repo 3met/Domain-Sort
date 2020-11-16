@@ -21,6 +21,10 @@ class Dictionary():
 			self._generate(dictionary_file_location=dictionary_file_location)
 
 
+	def __len__(self):
+		return len(self.words)
+
+
 	def _generate(self, 
 		dictionary_file_location=DICTIONARY_FILE_LOCATION):
 		"""
