@@ -21,3 +21,6 @@ Create a list of all TLDs or words/symbols you want to skip over in the filterin
 
 Run sort_domain.exe and follow instructions on screen.
 
+## Notes
+
+_Version 2 completed on Nov 16, 2020_
