@@ -72,10 +72,9 @@ def two_word_filter():
 				for word in dictionary:
 					# Checks if domain starts with first word
 					if word == cleaned_domain[:len(word)]:
-						# Cycles through words in dictionary again
-						for secondWord in dictionary:
-							# Checks if the new domain is composed of both first and second words
-							if word + secondWord == cleaned_domain:
+						second_word = cleaned_domain[len(word):]
+						# Checks if the new domain is composed of both first and second words
+						if second_word in dictionary:
 								results.write(domain + '\n')
 								print(domain)
 
