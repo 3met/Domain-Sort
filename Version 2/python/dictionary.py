@@ -6,7 +6,6 @@ class Dictionary():
 		A class to store the dictionary and related information
 	"""
 
-
 	DICTIONARY_FILE_LOCATION = os.path.join(
 		os.path.dirname(os.path.realpath(__file__)),
 		"dictionary.txt")
@@ -35,5 +34,5 @@ class Dictionary():
 			words = dictionary.read().strip().split('\n')
 			self.words = set(words)
 
-		self.shortest_word = len(min(self.words, key=len))
-		self.longest_word = len(max(self.words, key=len))
+		self.shortest_word = min(self.words, key=len)
+		self.longest_word = max(self.words, key=len)
