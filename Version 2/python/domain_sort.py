@@ -20,7 +20,7 @@ SKIP_LIST_FILE_LOCATION = os.path.join(FILE_DIR, "input-skiplist.txt")
 # Output file location globals
 ONE_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-oneword.txt")
 TWO_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-twoword.txt")
-THREE_LETTER_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-threeletter.txt")
+NUM_LETTER_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-nletter.txt")
 
 # --- Other Globals ---
 # List of keywords to avoid
@@ -43,9 +43,9 @@ def main():
 	while True:
 		# List actions for user
 		print("\nAvailable Actions:")
-		print("[1] Check for one word domains")
-		print("[2] Check for two word domains")
-		print("[3] Check for three letter domains")
+		print("[1] Search for one word domains")
+		print("[2] Search for two word domains")
+		print("[3] Search for domains of a specific length")
 		print("[4] Exit")
 		# Gets user input for action
 		action = int(input("\nPlease select an action: "))
@@ -55,7 +55,8 @@ def main():
 		elif action == 2:
 			two_word_filter(domain_set, dictionary)
 		elif action == 3:
-			num_letter_filter(domain_set, 3)
+			n = int(input('Enter a length to search for: '))
+			num_letter_filter(domain_set, n)
 		elif action == 4:
 			break
 		# Informs user in their action was not valid
@@ -93,7 +94,9 @@ def one_word_filter(domain_set, dictionary, verbose=True):
 		print(f'({round((len(output)/len(domain_set))*100, 2)}%)')
 		print(f'Total Duration: {end_time-start_time}')
 		print('------------------------------')
-
+		print(f'Ouput saved to: {ONE_WORD_DOMAIN_OUTPUT_FILE}')
+		print('------------------------------')
+		
 	return output
 
 
@@ -131,6 +134,8 @@ def two_word_filter(domain_set, dictionary, verbose=True):
 								print(domain)
 							output.add(domain)
 
+	set_to_text_file(output, TWO_WORD_DOMAIN_OUTPUT_FILE)
+
 	end_time = datetime.now()
 
 	if verbose:
@@ -140,24 +145,49 @@ def two_word_filter(domain_set, dictionary, verbose=True):
 		print(f'({round((len(output)/len(domain_set))*100, 2)}%)')
 		print(f'Total Duration: {end_time-start_time}')
 		print('------------------------------')
+		print(f'Ouput saved to: {TWO_WORD_DOMAIN_OUTPUT_FILE}')
+		print('------------------------------')
 
 	return output
 
 
 # Filters the domain list based on a given domain length
-def num_letter_filter(domain_set, num_letters):
-	# Opens output file
-	with open(THREE_LETTER_DOMAIN_OUTPUT_FILE, 'w') as results:
-		# Runs through all domains in domain list
-		for domain in domain_set:
-			if check_valid(domain):
-				cleaned_domain = clean_domain(domain)
-				# Checks if the length of the cleaned domain matches the length requested
-				if len(cleaned_domain) == num_letters:
-					# Checks if the string only contains letters and not number
-					if not any(char.isdigit() for char in cleaned_domain):
-						results.write(domain + '\n')
-						print(domain)
+def num_letter_filter(domain_set, num_letters, verbose=True):
+	start_time = datetime.now()
+
+	if verbose:
+		print('\n------------------------------')
+		print(f'Searching for {num_letters} letter domains...')
+		print('------------------------------')
+
+	output = set()
+
+	# Runs through all domains in domain list
+	for domain in domain_set:
+		if check_valid(domain):
+			cleaned_domain = clean_domain(domain)
+			# Checks if the length of the cleaned domain matches the length requested
+			if len(cleaned_domain) == num_letters:
+				# Checks if the string only contains letters and not number
+				if not any(char.isdigit() for char in cleaned_domain):
+					output.add(domain)
+					print(domain)
+
+	set_to_text_file(output, NUM_LETTER_DOMAIN_OUTPUT_FILE)
+
+	end_time = datetime.now()
+
+	if verbose:
+		print('------------------------------')
+		print('Results:\n')
+		print(f'{len(output)} out of {len(domain_set)} valid results', end='')
+		print(f'({round((len(output)/len(domain_set))*100, 2)}%)')
+		print(f'Total Duration: {end_time-start_time}')
+		print('------------------------------')
+		print(f'Ouput saved to: {NUM_LETTER_DOMAIN_OUTPUT_FILE}')
+		print('------------------------------')
+
+	return output
 
 
 # Checks if the domain contains and of the keywords in the skip list
