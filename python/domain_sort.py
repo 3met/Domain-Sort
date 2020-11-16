@@ -69,7 +69,7 @@ def two_word_filter():
 	with open(TWO_WORD_DOMAIN_OUTPUT_FILE, 'w') as results:
 		for domain in domains:
 			if check_valid(domain):
-				cleaned_domain =  clean_domain(domain)
+				cleaned_domain = clean_domain(domain)
 				# Cycles through words in dictionary
 				for word in dictionary:
 					# Checks if domain starts with first word
@@ -125,7 +125,7 @@ def get_domains():
 def get_dictionary():
 	with open(DICTIONARY_FILE_LOCATION, 'r') as dictionary:
 		words = dictionary.read().strip().split('\n')
-	return tuple(words)
+	return set(words)
 
 
 if __name__ == "__main__":
