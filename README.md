@@ -11,4 +11,5 @@ See specific instructions in the folders for each version.
 
 ## Notes
 _Version 1 completed on Sep 26, 2019_
+
 _Version 2 completed on Nov 16, 2020_
