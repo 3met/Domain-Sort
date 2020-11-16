@@ -107,16 +107,23 @@ def two_word_filter(dictionary, verbose=True):
 		for domain in domains:
 			if check_valid(domain):
 				cleaned_domain = clean_domain(domain)
-				# Cycles through words in dictionary
-				for word in dictionary.words:
-					# Checks if domain starts with first word
-					if word == cleaned_domain[:len(word)]:
-						second_word = cleaned_domain[len(word):]
-						# Checks if the new domain is composed of both first and second words
+
+				# Calculate the min and max possible lengths of the first word
+				min_len = len(dictionary.shortest_word)
+				max_len = min(len(dictionary.longest_word), 
+					len(cleaned_domain)-min_len)
+
+				# Loops through all possible first words and checks
+				# if the word is valid
+				for sub_len in range(min_len, max_len):
+					if cleaned_domain[:sub_len] in dictionary.words:
+						# Derives a possible second word from first word
+						second_word = cleaned_domain[sub_len:]
+						# Checks if the second word is valid
 						if second_word in dictionary.words:
-								results.write(domain + '\n')
-								print(domain)
-								output.add(domain)
+							results.write(domain + '\n')
+							print(domain)
+							output.add(domain)
 
 	end_time = datetime.now()
 
