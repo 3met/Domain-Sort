@@ -88,10 +88,21 @@ def one_word_filter(dictionary, verbose=True):
 		print(f'Total Duration: {end_time-start_time}')
 		print('------------------------------')
 
+	return output
+
 
 # Filters two word domains out of domain list
-def two_word_filter(dictionary):
+def two_word_filter(dictionary, verbose=True):
+	start_time = datetime.now()
+
+	if verbose:
+		print('\n------------------------------')
+		print('Searching for two word domains...')
+		print('------------------------------')
+
 	domains = get_domains()
+	output = set()
+
 	with open(TWO_WORD_DOMAIN_OUTPUT_FILE, 'w') as results:
 		for domain in domains:
 			if check_valid(domain):
@@ -105,6 +116,19 @@ def two_word_filter(dictionary):
 						if second_word in dictionary.words:
 								results.write(domain + '\n')
 								print(domain)
+								output.add(domain)
+
+	end_time = datetime.now()
+
+	if verbose:
+		print('------------------------------')
+		print('Results:\n')
+		print(f'{len(output)} out of {len(domains)} valid results', end='')
+		print(f'({round((len(output)/len(domains))*100, 2)}%)')
+		print(f'Total Duration: {end_time-start_time}')
+		print('------------------------------')
+
+	return output
 
 
 # Filters the domain list based on a given domain length
