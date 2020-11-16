@@ -11,3 +11,6 @@ Once downloaded from Github, run sort_domain.py and follow instructions on scree
 ### For Compiled Version
 Paste list of domains in domains.txt. Each line should contain one domain.
 Once downloaded from Github, run sort_domain.exe and follow instructions on screen.
+
+## Notes
+_Version 1 completed on Sep 26, 2019_
