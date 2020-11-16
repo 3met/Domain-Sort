@@ -7,25 +7,28 @@
 from datetime import datetime
 
 from dictionary import Dictionary
+from set_to_text_file import set_to_text_file
+from text_file_to_set import text_file_to_set
 
 import os
 
 # List of keywords to avoid
-skipList = ('.me', '.org', "-")
+skipList = ('.me', '.org', '-')
+
 # Input file location globals
-DOMAIN_FILE_LOCATION = os.path.join(
-	os.path.dirname(os.path.realpath(__file__)),
-	"domains.txt")
+FILE_DIR = os.path.dirname(os.path.realpath(__file__))
+DOMAIN_FILE_LOCATION = os.path.join(FILE_DIR, "domains.txt")
 # Output file location globals
-ONE_WORD_DOMAIN_OUTPUT_FILE = "results-oneword.txt"
-TWO_WORD_DOMAIN_OUTPUT_FILE = "results-twoword.txt"
-THREE_LETTER_DOMAIN_OUTPUT_FILE = "results-threeletter.txt"
+ONE_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-oneword.txt")
+TWO_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-twoword.txt")
+THREE_LETTER_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-threeletter.txt")
 
 # Main Function
 def main():
 	print('Initializing...', end='')
 
 	dictionary = Dictionary()
+	domain_set = text_file_to_set(DOMAIN_FILE_LOCATION)
 
 	print('\r******************************')
 	print('***** Word Domain Filter *****')
@@ -44,11 +47,11 @@ def main():
 		action = int(input("\nPlease select an action: "))
 		# Executes action as requested by user
 		if action == 1:
-			one_word_filter(dictionary)
+			one_word_filter(domain_set, dictionary)
 		elif action == 2:
-			two_word_filter(dictionary)
+			two_word_filter(domain_set, dictionary)
 		elif action == 3:
-			num_letter_filter(3)
+			num_letter_filter(domain_set, 3)
 		elif action == 4:
 			break
 		# Informs user in their action was not valid
@@ -57,7 +60,7 @@ def main():
 
 
 # Filters one word domains out of domain list
-def one_word_filter(dictionary, verbose=True):
+def one_word_filter(domain_set, dictionary, verbose=True):
 	start_time = datetime.now()
 
 	if verbose:
@@ -65,26 +68,25 @@ def one_word_filter(dictionary, verbose=True):
 		print('Searching for one word domains...')
 		print('------------------------------')
 		
-	domains = get_domains()
 	output = set()
 
-	with open(ONE_WORD_DOMAIN_OUTPUT_FILE, 'w') as results:
-		for domain in domains:
-			if check_valid(domain):
-				cleaned_domain = clean_domain(domain)
-				# Checks if the cleaned domain is a valid word
-				if cleaned_domain in dictionary.words:
-					print(domain)
-					output.add(domain)
-					results.write(domain + '\n')
+	for domain in domain_set:
+		if check_valid(domain):
+			cleaned_domain = clean_domain(domain)
+			# Checks if the cleaned domain is a valid word
+			if cleaned_domain in dictionary.words:
+				output.add(domain)
+				print(domain)
+
+	set_to_text_file(output, ONE_WORD_DOMAIN_OUTPUT_FILE)
 
 	end_time = datetime.now()
 
 	if verbose:
 		print('------------------------------')
 		print('Results:\n')
-		print(f'{len(output)} out of {len(domains)} valid results', end='')
-		print(f'({round((len(output)/len(domains))*100, 2)}%)')
+		print(f'{len(output)} out of {len(domain_set)} valid results', end='')
+		print(f'({round((len(output)/len(domain_set))*100, 2)}%)')
 		print(f'Total Duration: {end_time-start_time}')
 		print('------------------------------')
 
@@ -92,7 +94,7 @@ def one_word_filter(dictionary, verbose=True):
 
 
 # Filters two word domains out of domain list
-def two_word_filter(dictionary, verbose=True):
+def two_word_filter(domain_set, dictionary, verbose=True):
 	start_time = datetime.now()
 
 	if verbose:
@@ -100,11 +102,10 @@ def two_word_filter(dictionary, verbose=True):
 		print('Searching for two word domains...')
 		print('------------------------------')
 
-	domains = get_domains()
 	output = set()
 
 	with open(TWO_WORD_DOMAIN_OUTPUT_FILE, 'w') as results:
-		for domain in domains:
+		for domain in domain_set:
 			if check_valid(domain):
 				cleaned_domain = clean_domain(domain)
 
@@ -122,7 +123,8 @@ def two_word_filter(dictionary, verbose=True):
 						# Checks if the second word is valid
 						if second_word in dictionary.words:
 							results.write(domain + '\n')
-							print(domain)
+							if verbose:
+								print(domain)
 							output.add(domain)
 
 	end_time = datetime.now()
@@ -130,8 +132,8 @@ def two_word_filter(dictionary, verbose=True):
 	if verbose:
 		print('------------------------------')
 		print('Results:\n')
-		print(f'{len(output)} out of {len(domains)} valid results', end='')
-		print(f'({round((len(output)/len(domains))*100, 2)}%)')
+		print(f'{len(output)} out of {len(domain_set)} valid results', end='')
+		print(f'({round((len(output)/len(domain_set))*100, 2)}%)')
 		print(f'Total Duration: {end_time-start_time}')
 		print('------------------------------')
 
@@ -139,13 +141,11 @@ def two_word_filter(dictionary, verbose=True):
 
 
 # Filters the domain list based on a given domain length
-def num_letter_filter(num_letters):
-	# Fetches domain list
-	domains = get_domains()
+def num_letter_filter(domain_set, num_letters):
 	# Opens output file
 	with open(THREE_LETTER_DOMAIN_OUTPUT_FILE, 'w') as results:
 		# Runs through all domains in domain list
-		for domain in domains:
+		for domain in domain_set:
 			if check_valid(domain):
 				cleaned_domain = clean_domain(domain)
 				# Checks if the length of the cleaned domain matches the length requested
@@ -168,13 +168,6 @@ def check_valid(domain):
 # Returns the main domain name ('site.com' ==> 'site')
 def clean_domain(domain):
 	return domain.split(".", 1)[0]
-
-
-# Fetches and returns domains from domain list text file
-def get_domains():
-	with open(DOMAIN_FILE_LOCATION, 'r') as domainFile:
-		domains = domainFile.read().strip().split('\n')
-	return tuple(domains)
 
 
 if __name__ == "__main__":
