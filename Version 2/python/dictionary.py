@@ -17,7 +17,7 @@ class Dictionary():
 
 	DICTIONARY_FILE_LOCATION = os.path.join(
 		os.path.dirname(os.path.realpath(__file__)),
-		"dictionary.txt")
+		"data-dictionary.txt")
 
 
 	def __init__(self, generate=True,

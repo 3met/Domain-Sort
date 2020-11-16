@@ -12,16 +12,19 @@ from text_file_to_set import text_file_to_set
 
 import os
 
-# List of keywords to avoid
-skipList = ('.me', '.org', '-')
-
-# Input file location globals
+# --- File Globals ---
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-DOMAIN_FILE_LOCATION = os.path.join(FILE_DIR, "domains.txt")
+# Input file location globals
+DOMAIN_FILE_LOCATION = os.path.join(FILE_DIR, "input-domains.txt")
+SKIP_LIST_FILE_LOCATION = os.path.join(FILE_DIR, "input-skiplist.txt")
 # Output file location globals
-ONE_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-oneword.txt")
-TWO_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-twoword.txt")
-THREE_LETTER_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "results-threeletter.txt")
+ONE_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-oneword.txt")
+TWO_WORD_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-twoword.txt")
+THREE_LETTER_DOMAIN_OUTPUT_FILE = os.path.join(FILE_DIR, "output-threeletter.txt")
+
+# --- Other Globals ---
+# List of keywords to avoid
+SKIP_LIST = text_file_to_set(SKIP_LIST_FILE_LOCATION)
 
 # Main Function
 def main():
@@ -29,6 +32,7 @@ def main():
 
 	dictionary = Dictionary()
 	domain_set = text_file_to_set(DOMAIN_FILE_LOCATION)
+	skip_list = text_file_to_set(DOMAIN_FILE_LOCATION)
 
 	print('\r******************************')
 	print('***** Word Domain Filter *****')
@@ -159,7 +163,7 @@ def num_letter_filter(domain_set, num_letters):
 # Checks if the domain contains and of the keywords in the skip list
 # Returns False if domain contains keyword, else returns true
 def check_valid(domain):
-	for keyword in skipList:
+	for keyword in SKIP_LIST:
 		if keyword in domain:
 			return False
 	return True
